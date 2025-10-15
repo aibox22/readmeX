@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import glob
 from typing import Set, List, Dict, Any
 from pathlib import Path
 from rich.console import Console
@@ -170,17 +171,35 @@ class DependencyAnalyzer:
         existing_content = ""
         
         for dep_file in lang_config["dependency_files"]:
-            dep_path = os.path.join(self.project_dir, dep_file)
-            if os.path.exists(dep_path):
-                try:
-                    with open(dep_path, "r", encoding="utf-8") as f:
-                        content = f.read()
-                        if content.strip():
-                            existing_content += f"\n=== {dep_file} ===\n{content}\n"
-                except Exception as e:
-                    self.console.print(f"[yellow]Warning: Could not read {dep_file}: {e}[/yellow]")
+            # Handle glob patterns like *.csproj
+            if "*" in dep_file:
+                # Use glob to find matching files
+                pattern = os.path.join(self.project_dir, dep_file).replace("\\", "/")
+                matching_files = glob.glob(pattern)
+                for file_path in matching_files:
+                    content = self._read_dependency_file(file_path, os.path.basename(file_path))
+                    if content:
+                        existing_content += content
+            else:
+                # Handle regular file names
+                dep_path = os.path.join(self.project_dir, dep_file)
+                if os.path.exists(dep_path):
+                    content = self._read_dependency_file(dep_path, dep_file)
+                    if content:
+                        existing_content += content
         
         return existing_content.strip()
+
+    def _read_dependency_file(self, file_path: str, display_name: str) -> str:
+        """Helper method to read a dependency file and return its content"""
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                if content.strip():
+                    return f"\n=== {display_name} ===\n{content}\n"
+        except Exception as e:
+            self.console.print(f"[yellow]Warning: Could not read {display_name}: {e}[/yellow]")
+        return ""
 
     def _extract_imports_by_language(self, content: str) -> Set[str]:
         """Extract import statements using language-specific patterns"""
@@ -293,6 +312,30 @@ class DependencyAnalyzer:
         
         # Determine output filename based on language
         primary_dep_file = lang_config["dependency_files"][0]
+        
+        # Handle glob patterns in primary dependency file
+        if "*" in primary_dep_file:
+            # For glob patterns, try to find an existing file or create a generic name
+            pattern = os.path.join(self.project_dir, primary_dep_file).replace("\\", "/")
+            existing_files = glob.glob(pattern)
+            
+            if existing_files:
+                # Use the name of the first existing file
+                primary_dep_file = os.path.basename(existing_files[0])
+            else:
+                # Create a generic filename based on the pattern
+                if primary_dep_file == "*.csproj":
+                    primary_dep_file = "Project.csproj"
+                elif primary_dep_file == "*.sln":
+                    primary_dep_file = "Solution.sln"
+                elif primary_dep_file == "*.gemspec":
+                    primary_dep_file = "gemfile.gemspec"
+                elif primary_dep_file == "*.prj":
+                    primary_dep_file = "project.prj"
+                else:
+                    # Generic fallback: replace * with "project"
+                    primary_dep_file = primary_dep_file.replace("*", "project")
+        
         output_dep_path = os.path.join(output_dir, primary_dep_file)
         
         # Save generated dependency file
