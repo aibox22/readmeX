@@ -254,11 +254,39 @@ For convenience, you can create a global configuration file. The tool will autom
 }
 ```
 
+#### 3. Using MiniMax as the LLM Provider
+
+[MiniMax](https://www.minimaxi.com/) offers a powerful OpenAI-compatible API with large context windows (204K tokens). Set `MINIMAX_API_KEY` and `readmex` will automatically configure the MiniMax endpoint and select `MiniMax-M2.7` as the default model:
+
+```bash
+export MINIMAX_API_KEY="your_minimax_api_key"
+# Optional: override the default model
+export LLM_MODEL_NAME="MiniMax-M2.7-highspeed"
+```
+
+Or via the config file:
+
+```json
+{
+  "LLM_API_KEY": "your_minimax_api_key",
+  "LLM_BASE_URL": "https://api.minimax.io/v1",
+  "LLM_MODEL_NAME": "MiniMax-M2.7",
+  "T2I_API_KEY": "your_t2i_api_key",
+  "T2I_BASE_URL": "https://api.openai.com/v1",
+  "T2I_MODEL_NAME": "dall-e-3"
+}
+```
+
+Available MiniMax models:
+
+| Model | Context | Notes |
+|---|---|---|
+| `MiniMax-M2.7` | 204K | Recommended — highest capability |
+| `MiniMax-M2.7-highspeed` | 204K | Faster, lower cost |
+| `MiniMax-M2.5` | 204K | Previous generation |
+| `MiniMax-M2.5-highspeed` | 204K | Previous generation, fast |
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
 ## 💻 Usage
 
 Once installed, you can use the `readmex` package in the command line. To generate your README, run the following:
