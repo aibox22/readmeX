@@ -71,7 +71,20 @@ def load_config() -> Dict[str, str]:
         if env_value is not None:
             config[config_key] = env_value
             sources[config_key] = f"Environment Variable ({env_var})"
-    
+
+    # MiniMax auto-detection: if MINIMAX_API_KEY is set, configure MiniMax as the
+    # LLM provider when no explicit LLM_API_KEY / LLM_BASE_URL has been provided.
+    minimax_api_key = os.getenv("MINIMAX_API_KEY")
+    if minimax_api_key and not config.get("llm_api_key"):
+        config["llm_api_key"] = minimax_api_key
+        sources["llm_api_key"] = "Environment Variable (MINIMAX_API_KEY)"
+        if not config.get("llm_base_url"):
+            config["llm_base_url"] = "https://api.minimax.io/v1"
+            sources["llm_base_url"] = "MiniMax auto-detection"
+        if not config.get("llm_model_name"):
+            config["llm_model_name"] = "MiniMax-M2.7"
+            sources["llm_model_name"] = "MiniMax auto-detection"
+
     # Set defaults for personal info if not provided
     personal_info_keys = ["github_username", "twitter_handle", "linkedin_username", "email"]
     for key in personal_info_keys:

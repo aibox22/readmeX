@@ -246,6 +246,38 @@ export MAX_WORKERS="10"                               # 可选，最大并发线
 }
 ```
 
+#### 3. 使用 MiniMax 作为 LLM 提供商
+
+[MiniMax](https://www.minimaxi.com/) 提供强大的 OpenAI 兼容 API，支持超大上下文窗口（204K tokens）。只需设置 `MINIMAX_API_KEY`，`readmex` 会自动配置 MiniMax 端点并将 `MiniMax-M2.7` 设为默认模型：
+
+```bash
+export MINIMAX_API_KEY="your_minimax_api_key"
+# 可选：覆盖默认模型
+export LLM_MODEL_NAME="MiniMax-M2.7-highspeed"
+```
+
+或通过配置文件：
+
+```json
+{
+  "LLM_API_KEY": "your_minimax_api_key",
+  "LLM_BASE_URL": "https://api.minimax.io/v1",
+  "LLM_MODEL_NAME": "MiniMax-M2.7",
+  "T2I_API_KEY": "your_t2i_api_key",
+  "T2I_BASE_URL": "https://api.openai.com/v1",
+  "T2I_MODEL_NAME": "dall-e-3"
+}
+```
+
+可用的 MiniMax 模型：
+
+| 模型 | 上下文窗口 | 说明 |
+|---|---|---|
+| `MiniMax-M2.7` | 204K | 推荐 — 最高能力 |
+| `MiniMax-M2.7-highspeed` | 204K | 更快，成本更低 |
+| `MiniMax-M2.5` | 204K | 上一代 |
+| `MiniMax-M2.5-highspeed` | 204K | 上一代，速度快 |
+
 <p align="right">(<a href="#readme-top">返回顶部</a>)</p>
 
 <!-- 使用示例 -->

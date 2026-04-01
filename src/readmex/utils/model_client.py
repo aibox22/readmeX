@@ -60,10 +60,10 @@ class ModelClient:
     def _is_azure_openai(self, base_url: str) -> bool:
         """
         Check if the base URL is for Azure OpenAI
-        
+
         Args:
             base_url: The base URL to check
-            
+
         Returns:
             True if it's Azure OpenAI, False otherwise
         """
@@ -71,6 +71,26 @@ class ModelClient:
         self.console.print(f"[dim]🔍 Checking URL: {base_url}[/dim]")
         self.console.print(f"[dim]   Contains '.openai.azure.com': {is_azure}[/dim]")
         return is_azure
+
+    def _is_minimax(self, base_url: str) -> bool:
+        """Check if the base URL is for MiniMax."""
+        url_lower = base_url.lower()
+        return "minimax.io" in url_lower or "minimax.chat" in url_lower
+
+    def _get_effective_temperature(self) -> float:
+        """Return temperature with provider-specific clamping applied.
+
+        MiniMax requires temperature strictly greater than 0.0.  Clamp to 0.01
+        to avoid an API error when a caller sets temperature=0.
+        """
+        temperature = self.temperature
+        if self._is_minimax(self.llm_config["base_url"]):
+            if temperature <= 0.0:
+                self.console.print(
+                    "[yellow]⚠️  MiniMax requires temperature > 0. Clamping to 0.01.[/yellow]"
+                )
+                temperature = 0.01
+        return temperature
 
     def _extract_azure_info(self, base_url: str) -> tuple[str, str, str]:
         """
@@ -221,7 +241,7 @@ class ModelClient:
                         {"role": "user", "content": question}
                     ],
                     max_tokens=self.max_tokens,
-                    temperature=self.temperature,
+                    temperature=self._get_effective_temperature(),
                     timeout=60
                 )
                 
@@ -437,7 +457,7 @@ class ModelClient:
     def get_current_settings(self) -> dict:
         """
         Get current settings information
-        
+
         Returns:
             Current settings dictionary
         """
@@ -445,6 +465,7 @@ class ModelClient:
             "llm_base_url": self.llm_config["base_url"],
             "llm_model_name": self.llm_config["model_name"],
             "llm_is_azure": self.is_llm_azure,
+            "llm_is_minimax": self._is_minimax(self.llm_config["base_url"]),
             "t2i_base_url": self.t2i_config["base_url"],
             "t2i_model_name": self.t2i_config["model_name"],
             "t2i_is_azure": self.is_t2i_azure,
