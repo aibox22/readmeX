@@ -1,0 +1,13 @@
+{
+  "python": ["requirements.txt", "pyproject.toml", "setup.py", "Pipfile"],
+  "javascript": ["package.json", "yarn.lock", "package-lock.json"],
+  "java": ["pom.xml", "build.gradle", "gradle.properties"],
+  "go": ["go.mod", "go.sum"],
+  "rust": ["Cargo.toml", "Cargo.lock"],
+  "csharp": ["*.csproj", "packages.config", "*.sln"],
+  "php": ["composer.json", "composer.lock"],
+  "ruby": ["Gemfile", "Gemfile.lock", "*.gemspec"],
+  "matlab": ["requirements.txt", "toolbox_dependencies.txt", "*.prj"],
+  "c": ["Makefile", "CMakeLists.txt", "configure.ac", "*.pc"],
+  "cpp": ["Makefile", "CMakeLists.txt", "conanfile.txt", "vcpkg.json"]
+}
