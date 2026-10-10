@@ -1115,6 +1115,8 @@ Return only the additional information text, no explanations."""
                     raise ValueError(f"Output directory is None at line {1060}")
                     
                 relative_logo_path = os.path.relpath(logo_path, self.output_dir)
+                # Convert Windows backslashes to forward slashes for web compatibility
+                relative_logo_path = relative_logo_path.replace('\\', '/')
                 self.console.print(f"[cyan]DEBUG: Relative logo path = {relative_logo_path}[/cyan]")
                 
                 # 替换整个logo img标签，使用新的属性
@@ -1427,6 +1429,8 @@ Return only the additional information text, no explanations."""
                     raise ValueError(f"Output directory is None at line {1315} (debug mode)")
                     
                 relative_logo_path = os.path.relpath(logo_path, self.output_dir)
+                # Convert Windows backslashes to forward slashes for web compatibility
+                relative_logo_path = relative_logo_path.replace('\\', '/')
                 self.console.print(f"[cyan]DEBUG (debug mode): Relative logo path = {relative_logo_path}[/cyan]")
                 
                 # 替换整个logo img标签，使用新的属性
