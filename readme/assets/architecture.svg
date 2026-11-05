@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="370" viewBox="0 0 1200 370" data-theme="light" role="img" lang="zh-CN" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase" data-diagram-type="architecture" data-reader-fit="authored-height">
+<style>
+
+svg {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', 'Noto Sans Mono CJK SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+}
+
+.c-grid {
+  stroke: #e9edf2;
+  fill: none;
+}
+
+.c-mask {
+  fill: #ffffff;
+  stroke: none;
+}
+
+.c-lane-rule {
+  stroke: #cbd5e1;
+  fill: none;
+  opacity: 0.7;
+}
+
+.c-lane-wash {
+  fill: rgba(248, 250, 252, 0.65);
+  stroke: none;
+}
+
+.c-frontend {
+  fill: rgba(34, 211, 238, 0.15);
+  stroke: #0891b2;
+}
+
+.c-backend {
+  fill: rgba(52, 211, 153, 0.18);
+  stroke: #059669;
+}
+
+.c-database {
+  fill: rgba(167, 139, 250, 0.2);
+  stroke: #7c3aed;
+}
+
+.c-cloud {
+  fill: rgba(251, 191, 36, 0.18);
+  stroke: #d97706;
+}
+
+.c-security {
+  fill: rgba(251, 113, 133, 0.15);
+  stroke: #e11d48;
+}
+
+.c-messagebus {
+  fill: rgba(251, 146, 60, 0.15);
+  stroke: #ea580c;
+}
+
+.c-external {
+  fill: rgba(148, 163, 184, 0.18);
+  stroke: #64748b;
+}
+
+.t-primary {
+  fill: #111827;
+}
+
+.t-muted {
+  fill: #5b6474;
+}
+
+.t-dim {
+  fill: #9aa3b2;
+}
+
+.t-frontend {
+  fill: #0891b2;
+}
+
+.t-backend {
+  fill: #059669;
+}
+
+.t-database {
+  fill: #7c3aed;
+}
+
+.t-cloud {
+  fill: #d97706;
+}
+
+.t-security {
+  fill: #e11d48;
+}
+
+.t-messagebus {
+  fill: #ea580c;
+}
+
+.t-external {
+  fill: #64748b;
+}
+
+.t-edge-default {
+  fill: #94a3b8;
+}
+
+.t-edge-emphasis {
+  fill: #059669;
+}
+
+.t-edge-security {
+  fill: #e11d48;
+}
+
+.t-edge-dashed {
+  fill: #7c3aed;
+}
+
+svg .semantic-sigil {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.76;
+}
+
+svg .semantic-sigil > * {
+  vector-effect: non-scaling-stroke;
+}
+
+svg .semantic-sigil .sigil-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+svg .s-frontend {
+  color: #0891b2;
+}
+
+svg .s-backend {
+  color: #059669;
+}
+
+svg .s-database {
+  color: #7c3aed;
+}
+
+svg .s-cloud {
+  color: #d97706;
+}
+
+svg .s-security {
+  color: #e11d48;
+}
+
+svg .s-messagebus {
+  color: #ea580c;
+}
+
+svg .s-external {
+  color: #64748b;
+}
+
+svg .brand-mark-badge {
+  fill: #fff;
+  stroke: none;
+}
+
+svg .brand-mark-frame {
+  fill: none;
+  stroke: #cbd5e1;
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .brand-mark-fallback {
+  fill: none;
+  stroke: #475569;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+svg[data-preset="blueprint"] .brand-mark-badge,
+svg[data-preset="blueprint"] .brand-mark-frame {
+  rx: 1px;
+}
+
+svg [data-detail-anchor] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.a-default {
+  stroke: #94a3b8;
+  fill: none;
+}
+
+.a-emphasis {
+  stroke: #059669;
+  fill: none;
+}
+
+.a-security {
+  stroke: #e11d48;
+  fill: none;
+  stroke-dasharray: 5,5;
+}
+
+.a-dashed {
+  stroke: #7c3aed;
+  fill: none;
+  stroke-dasharray: 4,4;
+}
+
+.m-default {
+  fill: #94a3b8;
+}
+
+.m-emphasis {
+  fill: #059669;
+}
+
+.m-security {
+  fill: #e11d48;
+}
+
+.m-dashed {
+  fill: #7c3aed;
+}
+
+svg [data-node-id] > .c-mask {
+  fill-opacity: 1;
+}
+
+svg[data-preset="editorial"] .c-grid {
+  stroke-dasharray: 1 4;
+  opacity: 0.48;
+}
+
+svg[data-preset="editorial"] .c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke-dasharray: 9 4;
+}
+
+svg[data-preset="blueprint"] .c-grid {
+  stroke-dasharray: 1 3;
+  opacity: 0.78;
+}
+
+svg[data-preset="blueprint"] .c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke-dasharray: 12 4 2 4;
+}
+
+svg[data-preset="blueprint"] .c-security-group,
+svg[data-preset="blueprint"] .c-lane {
+  stroke-dasharray: 7 3;
+}
+
+.c-security-group {
+  fill: transparent;
+  stroke: #e11d48;
+  stroke-dasharray: 4,4;
+}
+
+.c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke: #d97706;
+  stroke-dasharray: 8,4;
+}
+
+.c-lane {
+  fill: rgba(248, 250, 252, 0.65);
+  stroke: #cbd5e1;
+  stroke-dasharray: 6,6;
+}
+</style>
+<metadata id="readmex-source-evidence">{&quot;schemaVersion&quot;:2,&quot;verified&quot;:true,&quot;repository&quot;:{&quot;mode&quot;:&quot;working-tree&quot;,&quot;label&quot;:&quot;Current working tree&quot;,&quot;linkMode&quot;:&quot;local-only&quot;},&quot;referenceCount&quot;:7,&quot;nodes&quot;:{&quot;entry&quot;:[{&quot;path&quot;:&quot;skills/readmex/SKILL.md&quot;,&quot;line&quot;:13,&quot;endLine&quot;:39,&quot;sha256&quot;:&quot;f575c10be86c3c45bf03d64bbfdf33141a6a4a3e6d3ccefb03331db892ea6690&quot;}],&quot;pipelines&quot;:[{&quot;path&quot;:&quot;skills/readmex/pipelines/quick-create.md&quot;,&quot;line&quot;:3,&quot;endLine&quot;:18,&quot;sha256&quot;:&quot;1e564819b163d35b1936c6571522d60ba692776275051e4ae328f0787fa5810b&quot;},{&quot;path&quot;:&quot;skills/readmex/pipelines/review.md&quot;,&quot;line&quot;:5,&quot;endLine&quot;:37,&quot;sha256&quot;:&quot;9e73107bc17dad4a6fac3ca2bc6733e967d40d344ccd2c1e640312ed7f866924&quot;},{&quot;path&quot;:&quot;skills/readmex/pipelines/optimize.md&quot;,&quot;line&quot;:5,&quot;endLine&quot;:69,&quot;sha256&quot;:&quot;9203b499c17da51c4d4f063c71132835053fcbc3d1019934e74d471445b4c870&quot;}],&quot;tools&quot;:[{&quot;path&quot;:&quot;skills/readmex/scripts/scan.py&quot;,&quot;line&quot;:195,&quot;endLine&quot;:218,&quot;sha256&quot;:&quot;6d0ccccaccd1672eb83dd52c2cad73dc0a46f281403052fc2eb72a1e898e76db&quot;},{&quot;path&quot;:&quot;skills/readmex/bin/render-diagram.mjs&quot;,&quot;line&quot;:1,&quot;endLine&quot;:64,&quot;sha256&quot;:&quot;15e3c9672af1e7a163cc4eeea8aad555f27e28a613c3f36681341c14125b67fe&quot;},{&quot;path&quot;:&quot;skills/readmex/scripts/readme_factor_audit.py&quot;,&quot;line&quot;:1,&quot;sha256&quot;:&quot;5729ad1be691071daade4a7efcdc5679859083014488d83d29b81d3e59af9271&quot;}]}}</metadata>
+<rect width="1200" height="370" fill="#f4f5f7"/>
+<g id="diagram-content" transform="scale(1)">
+        <title id="archify-diagram-title">readmex：入口、流水线与配套工具</title>
+        <desc id="archify-diagram-description">由 Archify 生成的架构图。</desc>
+        <!-- Definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <!-- Boundaries (behind everything) -->
+
+
+        <!-- Connection paths (before components for correct z-order) -->
+        <g data-graph-role="automatic-crossover">
+          <path data-graph-role="automatic-crossover-underlay" d="M 310 170 L 460 170" fill="none" stroke="#ffffff" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="entry" data-edge-to="pipelines" data-edge-label="路由" data-edge-key="0" data-edge-id="route" data-composition-points="310,170;460,170" data-composition-crossover="halo" data-composition-independent="true" d="M 310 170 L 460 170" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover">
+          <path data-graph-role="automatic-crossover-underlay" d="M 740 170 L 890 170" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="pipelines" data-edge-to="tools" data-edge-label="调用" data-edge-key="1" data-edge-id="invoke" data-composition-points="740,170;890,170" data-composition-crossover="halo" data-composition-independent="true" d="M 740 170 L 890 170" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+
+        <!-- Components -->
+        <g id="node-entry" data-node-id="entry" data-node-label="任务入口" aria-label="聚焦任务入口，SKILL.md, 架构组件" data-node-kind="frontend" data-node-sublabel="SKILL.md" data-node-context="架构组件">
+          <title>任务入口 · SKILL.md · 架构组件</title>
+          <rect x="30" y="100" width="280" height="140" rx="6" class="c-mask"/>
+          <rect x="30" y="100" width="280" height="140" rx="6" class="c-frontend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(36 106) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2"/>
+            <path d="M2 6.5h12"/>
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="170" y="162" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">任务入口</text>
+        <text data-detail="context" x="170" y="196" class="t-muted" font-size="28" text-anchor="middle">SKILL.md</text>
+        </g>
+
+        <g id="node-pipelines" data-node-id="pipelines" data-node-label="三条流水线" aria-label="聚焦三条流水线，创建 / 审查 / 优化, 架构组件" data-node-kind="backend" data-node-sublabel="创建 / 审查 / 优化" data-node-context="架构组件">
+          <title>三条流水线 · 创建 / 审查 / 优化 · 架构组件</title>
+          <rect x="460" y="100" width="280" height="140" rx="6" class="c-mask"/>
+          <rect x="460" y="100" width="280" height="140" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(466 106) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="600" y="162" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">三条流水线</text>
+        <text data-detail="context" x="600" y="196" class="t-muted" font-size="25.1" text-anchor="middle">创建 / 审查 / 优化</text>
+        </g>
+
+        <g id="node-tools" data-node-id="tools" data-node-label="配套工具" aria-label="聚焦配套工具，核验 / 渲染, 架构组件" data-node-kind="database" data-node-sublabel="核验 / 渲染" data-node-context="架构组件">
+          <title>配套工具 · 核验 / 渲染 · 架构组件</title>
+          <rect x="890" y="100" width="280" height="140" rx="6" class="c-mask"/>
+          <rect x="890" y="100" width="280" height="140" rx="6" class="c-database" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(896 106) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1030" y="162" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">配套工具</text>
+        <text data-detail="context" x="1030" y="196" class="t-muted" font-size="28" text-anchor="middle">核验 / 渲染</text>
+        </g>
+
+        <!-- Connection labels -->
+        <g data-detail="context" data-edge-from="entry" data-edge-to="pipelines" data-edge-label="路由" data-edge-key="0" data-edge-id="route">
+          <rect x="341" y="134" width="88" height="36" rx="3" class="c-mask"/>
+          <text x="385" y="160" class="t-edge-emphasis" font-size="28" text-anchor="middle">路由</text>
+        </g>
+        <g data-detail="context" data-edge-from="pipelines" data-edge-to="tools" data-edge-label="调用" data-edge-key="1" data-edge-id="invoke">
+          <rect x="771" y="134" width="88" height="36" rx="3" class="c-mask"/>
+          <text x="815" y="160" class="t-edge-default" font-size="28" text-anchor="middle">调用</text>
+        </g>
+
+        <!-- Boundary labels (foreground masks keep routes out of titles) -->
+
+
+        <!-- Legend -->
+
+
+</g>
+</svg>

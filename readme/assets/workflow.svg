@@ -1,0 +1,368 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="395.018" viewBox="0 0 1200 395.018" data-theme="light" data-layout-contract="readable-v2" role="img" lang="zh-CN" aria-labelledby="archify-diagram-title archify-diagram-description" data-preset="classic" data-quality-profile="showcase">
+<style>
+
+svg {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'DejaVu Sans Mono', 'Liberation Mono', 'Noto Sans Mono CJK SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', monospace;
+}
+
+.c-grid {
+  stroke: #e9edf2;
+  fill: none;
+}
+
+.c-mask {
+  fill: #ffffff;
+  stroke: none;
+}
+
+.c-lane-rule {
+  stroke: #cbd5e1;
+  fill: none;
+  opacity: 0.7;
+}
+
+.c-lane-wash {
+  fill: rgba(248, 250, 252, 0.65);
+  stroke: none;
+}
+
+.c-frontend {
+  fill: rgba(34, 211, 238, 0.15);
+  stroke: #0891b2;
+}
+
+.c-backend {
+  fill: rgba(52, 211, 153, 0.18);
+  stroke: #059669;
+}
+
+.c-database {
+  fill: rgba(167, 139, 250, 0.2);
+  stroke: #7c3aed;
+}
+
+.c-cloud {
+  fill: rgba(251, 191, 36, 0.18);
+  stroke: #d97706;
+}
+
+.c-security {
+  fill: rgba(251, 113, 133, 0.15);
+  stroke: #e11d48;
+}
+
+.c-messagebus {
+  fill: rgba(251, 146, 60, 0.15);
+  stroke: #ea580c;
+}
+
+.c-external {
+  fill: rgba(148, 163, 184, 0.18);
+  stroke: #64748b;
+}
+
+.t-primary {
+  fill: #111827;
+}
+
+.t-muted {
+  fill: #5b6474;
+}
+
+.t-dim {
+  fill: #9aa3b2;
+}
+
+.t-frontend {
+  fill: #0891b2;
+}
+
+.t-backend {
+  fill: #059669;
+}
+
+.t-database {
+  fill: #7c3aed;
+}
+
+.t-cloud {
+  fill: #d97706;
+}
+
+.t-security {
+  fill: #e11d48;
+}
+
+.t-messagebus {
+  fill: #ea580c;
+}
+
+.t-external {
+  fill: #64748b;
+}
+
+.t-edge-default {
+  fill: #94a3b8;
+}
+
+.t-edge-emphasis {
+  fill: #059669;
+}
+
+.t-edge-security {
+  fill: #e11d48;
+}
+
+.t-edge-dashed {
+  fill: #7c3aed;
+}
+
+svg .semantic-sigil {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.76;
+}
+
+svg .semantic-sigil &gt; * {
+  vector-effect: non-scaling-stroke;
+}
+
+svg .semantic-sigil .sigil-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+svg .s-frontend {
+  color: #0891b2;
+}
+
+svg .s-backend {
+  color: #059669;
+}
+
+svg .s-database {
+  color: #7c3aed;
+}
+
+svg .s-cloud {
+  color: #d97706;
+}
+
+svg .s-security {
+  color: #e11d48;
+}
+
+svg .s-messagebus {
+  color: #ea580c;
+}
+
+svg .s-external {
+  color: #64748b;
+}
+
+svg .brand-mark-badge {
+  fill: #fff;
+  stroke: none;
+}
+
+svg .brand-mark-frame {
+  fill: none;
+  stroke: #cbd5e1;
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+svg .brand-mark-fallback {
+  fill: none;
+  stroke: #475569;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+svg[data-preset="blueprint"] .brand-mark-badge,
+svg[data-preset="blueprint"] .brand-mark-frame {
+  rx: 1px;
+}
+
+svg [data-detail-anchor] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.a-default {
+  stroke: #94a3b8;
+  fill: none;
+}
+
+.a-emphasis {
+  stroke: #059669;
+  fill: none;
+}
+
+.a-security {
+  stroke: #e11d48;
+  fill: none;
+  stroke-dasharray: 5,5;
+}
+
+.a-dashed {
+  stroke: #7c3aed;
+  fill: none;
+  stroke-dasharray: 4,4;
+}
+
+.m-default {
+  fill: #94a3b8;
+}
+
+.m-emphasis {
+  fill: #059669;
+}
+
+.m-security {
+  fill: #e11d48;
+}
+
+.m-dashed {
+  fill: #7c3aed;
+}
+
+svg [data-node-id] &gt; .c-mask {
+  fill-opacity: 1;
+}
+
+svg[data-preset="editorial"] .c-grid {
+  stroke-dasharray: 1 4;
+  opacity: 0.48;
+}
+
+svg[data-preset="editorial"] .c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke-dasharray: 9 4;
+}
+
+svg[data-preset="blueprint"] .c-grid {
+  stroke-dasharray: 1 3;
+  opacity: 0.78;
+}
+
+svg[data-preset="blueprint"] .c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke-dasharray: 12 4 2 4;
+}
+
+svg[data-preset="blueprint"] .c-security-group,
+svg[data-preset="blueprint"] .c-lane {
+  stroke-dasharray: 7 3;
+}
+
+.c-security-group {
+  fill: transparent;
+  stroke: #e11d48;
+  stroke-dasharray: 4,4;
+}
+
+.c-region {
+  fill: rgba(251, 191, 36, 0.05);
+  stroke: #d97706;
+  stroke-dasharray: 8,4;
+}
+
+.c-lane {
+  fill: rgba(248, 250, 252, 0.65);
+  stroke: #cbd5e1;
+  stroke-dasharray: 6,6;
+}
+</style>
+<metadata id="readmex-source-evidence">{"schemaVersion":2,"verified":true,"repository":{"mode":"working-tree","label":"Current working tree","linkMode":"local-only"},"referenceCount":3,"nodes":{"create":[{"path":"skills/readmex/pipelines/quick-create.md","line":3,"endLine":18,"sha256":"1e564819b163d35b1936c6571522d60ba692776275051e4ae328f0787fa5810b"}],"review":[{"path":"skills/readmex/pipelines/review.md","line":5,"endLine":37,"sha256":"9e73107bc17dad4a6fac3ca2bc6733e967d40d344ccd2c1e640312ed7f866924"}],"optimize":[{"path":"skills/readmex/pipelines/optimize.md","line":21,"endLine":69,"sha256":"9203b499c17da51c4d4f063c71132835053fcbc3d1019934e74d471445b4c870"}]}}</metadata>
+<rect width="1200" height="395.018" fill="#f4f5f7" />
+<g id="diagram-content" transform="scale(1.0676156583629892)">
+        <title id="archify-diagram-title">readmex 全流程：创建、审查、优化</title>
+        <desc id="archify-diagram-description">由 Archify 生成的工作流图。</desc>
+
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" stroke-width="0.5" />
+          </pattern>
+        </defs>
+
+
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="lane" data-composition-frame-id="lane-0" x="40" y="52" width="1068" height="194" rx="10" class="c-lane" stroke-width="1" />
+        <text x="54" y="84" class="t-dim" font-size="28" font-weight="600">01 / 创建 → 审查 → 优化</text>
+
+
+
+
+
+
+
+
+        <path data-edge-from="create" data-edge-to="review" data-edge-key="0" data-edge-id="audit" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="380,172;420,172" d="M 380 172 L 420 172" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" />
+        <path data-edge-from="review" data-edge-to="optimize" data-edge-key="1" data-edge-id="visual" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="740,172;780,172" d="M 740 172 L 780 172" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" />
+
+
+        <g id="node-create" data-node-id="create" data-node-label="创建" aria-label="聚焦创建，为新项目起稿, 创建 → 审查 → 优化" data-node-kind="frontend" data-node-sublabel="为新项目起稿" data-node-context="创建 → 审查 → 优化">
+          <title>创建 · 为新项目起稿 · 创建 → 审查 → 优化</title>
+          <rect x="60" y="102" width="320" height="140" rx="6" class="c-mask" />
+          <rect x="60" y="102" width="320" height="140" rx="6" class="c-frontend" stroke-width="1.5" />
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(66 108) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2" />
+            <path d="M2 6.5h12" />
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill" />
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill" />
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="220" y="157" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">创建</text>
+          <text data-detail="context" x="220" y="194" class="t-muted" font-size="28" text-anchor="middle">为新项目起稿</text>
+        <rect x="80.0" y="229.0" width="280.0" height="6" rx="3" fill="#C3E7EE" /><rect id="workflow-create-progress" x="80.0" y="229.0" width="280.0" height="6" rx="3" fill="#3776AB" /></g>
+
+        <g id="node-review" data-node-id="review" data-node-label="审查" aria-label="聚焦审查，核验并改写, 创建 → 审查 → 优化" data-node-kind="backend" data-node-sublabel="核验并改写" data-node-context="创建 → 审查 → 优化">
+          <title>审查 · 核验并改写 · 创建 → 审查 → 优化</title>
+          <rect x="420" y="102" width="320" height="140" rx="6" class="c-mask" />
+          <rect x="420" y="102" width="320" height="140" rx="6" class="c-backend" stroke-width="1.5" />
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(426 108) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5" />
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="580" y="157" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">审查</text>
+          <text data-detail="context" x="580" y="194" class="t-muted" font-size="28" text-anchor="middle">核验并改写</text>
+        <rect x="440.0" y="229.0" width="280.0" height="6" rx="3" fill="#BFE3D7" /><rect id="workflow-review-progress" x="440.0" y="229.0" width="280.0" height="6" rx="3" fill="#1CA584" /></g>
+
+        <g id="node-optimize" data-node-id="optimize" data-node-label="优化" aria-label="聚焦优化，配图与验收, 创建 → 审查 → 优化" data-node-kind="database" data-node-sublabel="配图与验收" data-node-context="创建 → 审查 → 优化">
+          <title>优化 · 配图与验收 · 创建 → 审查 → 优化</title>
+          <rect x="780" y="102" width="320" height="140" rx="6" class="c-mask" />
+          <rect x="780" y="102" width="320" height="140" rx="6" class="c-database" stroke-width="1.5" />
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(786 108) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2" />
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2" />
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="940" y="157" class="t-primary" font-size="40" font-weight="600" text-anchor="middle">优化</text>
+          <text data-detail="context" x="940" y="194" class="t-muted" font-size="28" text-anchor="middle">配图与验收</text>
+        <rect x="800.0" y="229.0" width="280.0" height="6" rx="3" fill="#DACEED" /><rect id="workflow-optimize-progress" x="800.0" y="229.0" width="280.0" height="6" rx="3" fill="#9574DC" /></g>
+
+
+
+
+
+
+
+
+</g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="410" viewBox="0 0 1200 410" role="img" aria-labelledby="hero-title hero-description">
+<title id="hero-title">readmex：创建、审查、优化 README</title>
+<desc id="hero-description">沿用项目折页 Logo，三张任务卡按创建、审查、优化连接。动图只逐步点亮进度线，主要文字一直可读。实验版本。</desc>
+<defs><style>text{font-family:Arial,"PingFang SC","Microsoft YaHei",sans-serif} .title{font-size:72px;font-weight:700;fill:#12324A}.lead{font-size:32px;fill:#557085}.name{font-size:42px;font-weight:700;fill:#12324A}.detail{font-size:28px;fill:#557085}</style></defs>
+<rect width="1200" height="410" fill="#F4F7F8"/>
+<g transform="translate(60 60) scale(.625)">
+  <rect width="128" height="128" rx="28" fill="#12324A"/>
+  <rect x="30" y="22" width="58" height="74" rx="8" fill="#F4F7F8"/>
+  <path d="M72 22h8l16 16v-6a8 8 0 0 0-8-8h-16z" fill="#FFD43B"/>
+  <path d="M80 22v14a6 6 0 0 0 6 6h16" fill="none" stroke="#12324A" stroke-width="2"/>
+  <rect x="42" y="48" width="34" height="6" rx="3" fill="#3776AB"/>
+  <rect x="42" y="62" width="26" height="6" rx="3" fill="#3776AB" opacity="0.7"/>
+  <circle cx="86" cy="92" r="16" fill="#FFD43B"/>
+  <circle cx="86" cy="92" r="7" fill="#12324A"/>
+</g>
+<text x="168" y="113" class="title">readmex</text>
+<text x="168" y="159" class="lead">把项目说明，写成可验证的一页。</text>
+<rect x="978" y="70" width="160" height="48" rx="12" fill="#FFF3C5"/>
+<text x="1058" y="102" text-anchor="middle" font-size="28" font-weight="600" fill="#12324A">实验版本</text>
+<g>
+<rect x="60" y="212" width="320" height="150" rx="16" fill="#E0F7FF" stroke="#22A9CB" stroke-width="2"/>
+<text x="88" y="269" class="name">创建</text><text x="88" y="310" class="detail">写出第一稿</text>
+<rect x="80" y="336" width="280" height="7" rx="3" fill="#C3E7EE"/>
+<rect id="hero-create-progress" x="80" y="336" width="280" height="7" rx="3" fill="#3776AB"/>
+<rect x="440" y="212" width="320" height="150" rx="16" fill="#DEF7EC" stroke="#1CA584" stroke-width="2"/>
+<text x="468" y="269" class="name">审查</text><text x="468" y="310" class="detail">核对每条主张</text>
+<rect x="460" y="336" width="280" height="7" rx="3" fill="#BFE3D7"/>
+<rect id="hero-review-progress" x="460" y="336" width="280" height="7" rx="3" fill="#1CA584"/>
+<rect x="820" y="212" width="320" height="150" rx="16" fill="#EFE6FF" stroke="#9574DC" stroke-width="2"/>
+<text x="848" y="269" class="name">优化</text><text x="848" y="310" class="detail">呈现关键机制</text>
+<rect x="840" y="336" width="280" height="7" rx="3" fill="#DACEED"/>
+<rect id="hero-optimize-progress" x="840" y="336" width="280" height="7" rx="3" fill="#9574DC"/>
+</g>
+<g fill="none" stroke="#557085" stroke-width="2"><path d="M392 287H428m-8-7 8 7-8 7"/><path d="M772 287H808m-8-7 8 7-8 7"/></g>
+</svg>

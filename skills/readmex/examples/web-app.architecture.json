@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Web application: request and storage",
+    "output": "readme/assets/architecture.svg",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1200,
+      430
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "Browser",
+      "sublabel": "User interface",
+      "pos": [
+        50,
+        140
+      ],
+      "size": [
+        280,
+        130
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "API",
+      "sublabel": "Request handling",
+      "pos": [
+        470,
+        140
+      ],
+      "size": [
+        280,
+        130
+      ]
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "Store",
+      "sublabel": "Persistent data",
+      "pos": [
+        890,
+        140
+      ],
+      "size": [
+        260,
+        130
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "request",
+      "from": "browser",
+      "to": "api",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "persist",
+      "from": "api",
+      "to": "store",
+      "label": "SQL"
+    }
+  ]
+}

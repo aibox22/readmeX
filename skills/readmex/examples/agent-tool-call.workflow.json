@@ -1,0 +1,70 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Agent tool call: one successful path",
+    "output": "readme/assets/workflow.svg",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "agent",
+      "label": "Agent tool call"
+    }
+  ],
+  "mainPath": [
+    "request",
+    "tool",
+    "reply"
+  ],
+  "nodes": [
+    {
+      "id": "request",
+      "lane": "agent",
+      "col": 0,
+      "type": "frontend",
+      "label": "Request",
+      "sublabel": "User asks for work",
+      "width": 320,
+      "height": 140
+    },
+    {
+      "id": "tool",
+      "lane": "agent",
+      "col": 1,
+      "type": "backend",
+      "label": "Tool",
+      "sublabel": "Execute one action",
+      "width": 320,
+      "height": 140
+    },
+    {
+      "id": "reply",
+      "lane": "agent",
+      "col": 2,
+      "type": "database",
+      "label": "Reply",
+      "sublabel": "Report the result",
+      "width": 320,
+      "height": 140
+    }
+  ],
+  "edges": [
+    {
+      "id": "dispatch",
+      "from": "request",
+      "to": "tool",
+      "variant": "emphasis"
+    },
+    {
+      "id": "result",
+      "from": "tool",
+      "to": "reply",
+      "variant": "default"
+    }
+  ]
+}

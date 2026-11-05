@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Scan a repository and print facts as JSON. Does not call a model or write docs."""
+"""Inventory repository files; print JSON and optionally persist the same scan."""
 
+import argparse
 import fnmatch
 import json
+import os
+import re
 import subprocess
-import sys
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 
@@ -15,234 +18,200 @@ DEPENDENCY_FILE_LIMIT = 30
 
 
 def load_json(name):
-    with open(DATA_DIR / name, encoding="utf-8") as handle:
-        return json.load(handle)
+    return json.loads((DATA_DIR / name).read_text(encoding="utf-8"))
 
 
-def gitignore_patterns(project_dir):
-    path = project_dir / ".gitignore"
-    if not path.is_file():
-        return []
-    patterns = []
-    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-        stripped = line.strip()
-        if stripped and not stripped.startswith("#"):
-            patterns.append(stripped)
+def git_command(root, args):
+    try:
+        return subprocess.run(["git", "-C", str(root), *args], capture_output=True)
+    except FileNotFoundError:
+        return None
+
+
+def git_output(root, args):
+    result = git_command(root, args)
+    return result.stdout.decode("utf-8", errors="replace").strip() if result and result.returncode == 0 else ""
+
+
+def git_info(root):
+    remote = git_output(root, ["remote", "get-url", "origin"])
+    remote = re.sub(r"^(https?://)[^/@]+@", r"\1", remote)
+    return {
+        "remote": remote,
+        "revision": git_output(root, ["rev-parse", "HEAD"]),
+        "repo_name": root.name,
+    }
+
+
+def ignore_patterns(root):
+    config = load_json("ignore_patterns.json")
+    patterns = config["ignore_dirs"] + config["ignore_files"]
+    ignore = root / ".gitignore"
+    if ignore.is_file():
+        patterns += [line.strip() for line in ignore.read_text(encoding="utf-8", errors="replace").splitlines()
+                     if line.strip() and not line.lstrip().startswith("#")]
     return patterns
 
 
-def pattern_matches(rel, name, is_dir, pattern):
-    dir_only = pattern.endswith("/")
-    body = pattern[:-1] if dir_only else pattern
-    if dir_only and not is_dir:
-        return False
-    if fnmatch.fnmatch(name, body) or fnmatch.fnmatch(rel, body) or fnmatch.fnmatch(rel, pattern):
-        return True
-    return any(fnmatch.fnmatch(part, body) for part in Path(rel).parts)
+def ignored(rel, patterns, is_dir=False):
+    result = False
+    parts = Path(rel).parts
+    for pattern in patterns:
+        negated = pattern.startswith("!")
+        body = pattern[1:] if negated else pattern
+        directory = body.endswith("/")
+        body = body.rstrip("/")
+        anchored = body.startswith("/")
+        body = body.lstrip("/")
+        candidates = ["/".join(parts[:i]) for i in range(1, len(parts) + 1)]
+        if directory and not is_dir:
+            candidates = candidates[:-1]
+        match = any(fnmatch.fnmatch(candidate, body) for candidate in candidates)
+        if not anchored and "/" not in body:
+            match = match or any(fnmatch.fnmatch(part, body) for part in (parts if is_dir or not directory else parts[:-1]))
+        if match:
+            result = not negated
+    return result
 
 
-def should_ignore(rel, name, is_dir, patterns):
-    if not rel or rel == ".":
-        return False
-    return any(pattern_matches(rel, name, is_dir, pattern) for pattern in patterns)
+def repository_files(root, patterns):
+    # Git supplies nested ignore and negation semantics without traversing vendored trees.
+    listed = git_command(root, ["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
+    if listed and listed.returncode == 0:
+        candidates = [root / os.fsdecode(item) for item in listed.stdout.split(b"\0") if item]
+    else:
+        candidates = []
+        for directory, dirs, files in os.walk(root, followlinks=False):
+            base = Path(directory)
+            dirs[:] = sorted(name for name in dirs
+                             if not (base / name).is_symlink()
+                             and not ignored((base / name).relative_to(root).as_posix(), patterns, True))
+            candidates.extend(base / name for name in sorted(files))
+    found = []
+    for file in candidates:
+        rel = file.relative_to(root).as_posix()
+        if file.is_symlink() or not file.is_file() or ignored(rel, patterns):
+            continue
+        found.append(file)
+    return sorted(set(found), key=lambda file: file.relative_to(root).as_posix())
 
 
-def build_extension_map(language_mapping):
-    extension_map = {}
-    for language, extensions in language_mapping.items():
-        for ext in extensions:
-            key = ext if not ext.startswith(".") else ext.lower()
-            extension_map[key] = language
-    return extension_map
+def extension_map():
+    return {ext.lower(): language for language, extensions in load_json("language_mapping.json").items()
+            for ext in extensions}
 
 
-def shebang_language(first_line):
-    shebang = first_line.lower()
-    if "python" in shebang:
-        return "python"
-    if "node" in shebang:
-        return "javascript"
-    if "ruby" in shebang:
-        return "ruby"
-    if "perl" in shebang:
-        return "perl"
-    if "php" in shebang:
-        return "php"
-    if "bash" in shebang or "sh" in shebang:
-        return "shell"
-    return None
-
-
-def detect_language(file_path, extension_map):
-    if file_path.name in extension_map:
-        return extension_map[file_path.name]
-    suffix = file_path.suffix.lower()
-    if suffix in extension_map:
-        return extension_map[suffix]
+def detect_language(file, extensions):
+    matched = extensions.get(file.name.lower()) or extensions.get(file.suffix.lower())
+    if matched:
+        return matched
     try:
-        first_line = file_path.read_text(encoding="utf-8", errors="ignore").splitlines()[0]
-    except (OSError, IndexError):
-        return None
-    if first_line.startswith("#!"):
-        return shebang_language(first_line)
-    return None
-
-
-def count_lines(file_path):
-    try:
-        with open(file_path, encoding="utf-8", errors="ignore") as handle:
-            return sum(1 for _ in handle)
+        with file.open(encoding="utf-8", errors="replace") as handle:
+            first = handle.readline(256).lower()
     except OSError:
-        return 0
+        return None
+    if first.startswith("#!"):
+        for token, language in [("python", "python"), ("node", "javascript"), ("ruby", "ruby"),
+                                ("perl", "perl"), ("php", "php"), ("sh", "shell")]:
+            if token in first:
+                return language
+    return None
 
 
-def analyze_languages(project_dir, extension_map, patterns):
+def analyze_languages(files):
+    extensions = extension_map()
     stats = defaultdict(lambda: {"files": 0, "lines": 0, "bytes": 0})
-    for path in project_dir.rglob("*"):
-        if not path.is_file():
-            continue
-        rel = path.relative_to(project_dir).as_posix()
-        if any(should_ignore(str(Path(*rel.split("/")[: i + 1])), part, True, patterns) for i, part in enumerate(rel.split("/")[:-1])):
-            continue
-        if should_ignore(rel, path.name, False, patterns):
-            continue
-        language = detect_language(path, extension_map)
+    for file in files:
+        language = detect_language(file, extensions)
         if not language:
             continue
         try:
-            size = path.stat().st_size
+            with file.open(encoding="utf-8", errors="replace") as handle:
+                lines = sum(1 for _ in handle)
+            size = file.stat().st_size
         except OSError:
             continue
         stats[language]["files"] += 1
-        stats[language]["lines"] += count_lines(path)
+        stats[language]["lines"] += lines
         stats[language]["bytes"] += size
-
-    total_lines = sum(item["lines"] for item in stats.values()) or 1
-    languages = []
-    for language, item in stats.items():
-        languages.append({
-            "language": language,
-            "files": item["files"],
-            "lines": item["lines"],
-            "bytes": item["bytes"],
-            "line_percentage": round(item["lines"] * 100 / total_lines, 1),
-        })
-    languages.sort(key=lambda item: item["lines"], reverse=True)
-    primary = languages[0]["language"] if languages else ""
-    return primary, languages
+    total = sum(value["lines"] for value in stats.values()) or 1
+    languages = [{"language": language, **value, "line_percentage": round(value["lines"] * 100 / total, 1)}
+                 for language, value in stats.items()]
+    languages.sort(key=lambda value: (-value["lines"], value["language"]))
+    return languages[0]["language"] if languages else "", languages
 
 
-def project_structure(project_dir, patterns):
-    lines = [project_dir.name + "/"]
-    truncated = False
+def project_structure(root, files):
+    tree = {}
+    for file in files:
+        branch = tree
+        for part in file.relative_to(root).parts:
+            branch = branch.setdefault(part, {})
+    lines = [root.name + "/"]
 
-    def walk(directory, depth):
-        nonlocal truncated
-        if truncated:
-            return
-        try:
-            children = sorted(directory.iterdir(), key=lambda path: (path.is_file(), path.name.lower()))
-        except OSError:
-            return
-        indent = "    " * depth
-        for child in children:
-            rel = child.relative_to(project_dir).as_posix()
-            if should_ignore(rel, child.name, child.is_dir(), patterns):
-                continue
+    def walk(branch, depth):
+        for name, children in sorted(branch.items(), key=lambda item: (not bool(item[1]), item[0].lower())):
             if len(lines) >= STRUCTURE_LINE_LIMIT:
-                lines.append(indent + "└── …")
-                truncated = True
-                return
-            suffix = "/" if child.is_dir() else ""
-            lines.append(f"{indent}├── {child.name}{suffix}")
-            if child.is_dir():
-                walk(child, depth + 1)
+                return False
+            lines.append("    " * depth + "├── " + name + ("/" if children else ""))
+            if children and not walk(children, depth + 1):
+                return False
+        return True
 
-    walk(project_dir, 1)
-    return "\n".join(lines), truncated
-
-
-def dependency_patterns(dependency_files):
-    found = []
-    for names in dependency_files.values():
-        for name in names:
-            if name not in found:
-                found.append(name)
-    return found
+    complete = walk(tree, 1)
+    if not complete:
+        lines.append("    └── …")
+    return "\n".join(lines), not complete
 
 
-def find_dependency_files(project_dir, patterns, manifests):
-    matches = []
-    for path in project_dir.rglob("*"):
-        if not path.is_file():
-            continue
-        rel = path.relative_to(project_dir).as_posix()
-        if any(should_ignore(str(Path(*rel.split("/")[: i + 1])), part, True, patterns) for i, part in enumerate(rel.split("/")[:-1])):
-            continue
-        if should_ignore(rel, path.name, False, patterns):
-            continue
-        if not any(fnmatch.fnmatch(path.name, manifest) for manifest in manifests):
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        excerpt = text[:EXCERPT_LIMIT]
-        matches.append({
-            "path": rel,
-            "excerpt": excerpt,
-            "truncated": len(text) > EXCERPT_LIMIT,
-        })
-        if len(matches) >= DEPENDENCY_FILE_LIMIT:
-            break
-    matches.sort(key=lambda item: item["path"])
-    return matches
+def excerpt(file, root):
+    with file.open(encoding="utf-8", errors="replace") as handle:
+        text = handle.read(EXCERPT_LIMIT + 1)
+    return {"path": file.relative_to(root).as_posix(), "excerpt": text[:EXCERPT_LIMIT],
+            "truncated": len(text) > EXCERPT_LIMIT}
 
 
-def git_info(project_dir):
-    result = subprocess.run(
-        ["git", "-C", str(project_dir), "remote", "get-url", "origin"],
-        capture_output=True,
-        text=True,
-    )
-    remote = result.stdout.strip() if result.returncode == 0 else ""
-    username = ""
-    repo_name = ""
-    if "github.com" in remote:
-        tail = remote.split("github.com", 1)[1].lstrip(":/")
-        if tail.endswith(".git"):
-            tail = tail[:-4]
-        parts = [part for part in tail.split("/") if part]
-        if len(parts) >= 2:
-            username, repo_name = parts[0], parts[1]
-    return {"remote": remote, "github_username": username, "repo_name": repo_name}
-
-
-def scan(project_dir):
-    project_dir = project_dir.resolve()
-    if not project_dir.is_dir():
-        raise SystemExit(f"Not a directory: {project_dir}")
-
-    ignore_config = load_json("ignore_patterns.json")
-    patterns = list(ignore_config.get("ignore_dirs", [])) + list(ignore_config.get("ignore_files", []))
-    patterns.extend(gitignore_patterns(project_dir))
-    extension_map = build_extension_map(load_json("language_mapping.json"))
-    primary, languages = analyze_languages(project_dir, extension_map, patterns)
-    structure, structure_truncated = project_structure(project_dir, patterns)
-    manifests = dependency_patterns(load_json("dependency_files.json"))
+def scan(root):
+    root = root.resolve()
+    if not root.is_dir():
+        raise ValueError(f"Not a directory: {root}")
+    files = repository_files(root, ignore_patterns(root))
+    primary, languages = analyze_languages(files)
+    structure, truncated = project_structure(root, files)
+    manifests = [name for group in load_json("dependency_files.json").values() for name in group]
+    dependencies = [file for file in files if any(fnmatch.fnmatch(file.name, name) for name in manifests)]
+    docs = [file for file in files if file.parent == root and
+            re.match(r"(?i)^(readme|license|licence|copying|security)([._-]|$)", file.name)]
     return {
-        "project_path": str(project_dir),
-        "git": git_info(project_dir),
-        "primary_language": primary,
-        "languages": languages,
-        "structure": structure,
-        "structure_truncated": structure_truncated,
-        "dependency_files": find_dependency_files(project_dir, patterns, manifests),
+        "project_path": str(root), "git": git_info(root),
+        "primary_language": primary, "languages": languages,
+        "structure": structure, "structure_truncated": truncated,
+        "dependency_files": [excerpt(file, root) for file in dependencies[:DEPENDENCY_FILE_LIMIT]],
+        "dependency_files_truncated": len(dependencies) > DEPENDENCY_FILE_LIMIT,
+        "documentation": [excerpt(file, root) for file in docs],
     }
 
 
 def main():
-    raw = sys.argv[1] if len(sys.argv) > 1 else "."
-    payload = scan(Path(raw))
-    json.dump(payload, sys.stdout, ensure_ascii=False, indent=2)
-    sys.stdout.write("\n")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("target", nargs="?", default=".", type=Path)
+    parser.add_argument("--output", type=Path, help="Persist JSON as well as printing it")
+    args = parser.parse_args()
+    try:
+        text = json.dumps(scan(args.target), ensure_ascii=False, indent=2) + "\n"
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=args.output.parent,
+                                             delete=False, prefix=".scan-") as handle:
+                temporary = Path(handle.name)
+                handle.write(text)
+            try:
+                temporary.replace(args.output)
+            finally:
+                temporary.unlink(missing_ok=True)
+        print(text, end="")
+    except (OSError, ValueError) as error:
+        parser.exit(1, f"scan: {error}\n")
 
 
 if __name__ == "__main__":
