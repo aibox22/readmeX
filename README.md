@@ -1,80 +1,95 @@
 # readmex
 
-用三条任务流水线，为项目作者创建、审查和美化 README。
+用创建、审查、优化三条流水线，把 README 写成能对照仓库核对的正文。对话里的 AI 读取 `skills/readmex` 后写作；扫描、机械检查和渲染由仓库里的脚本完成。
 
-> [!NOTE]
-> **正在开发和重构的实验版本。** 适合个人项目作者试用；尚不承诺稳定接口或维护周期。
+<p align="center">
+  <img src="readme/assets/hero.gif" width="100%" alt="readmex：创建、审查、优化依次出现，放大镜移到文稿上">
+</p>
 
-![readmex：创建、审查、优化三条流水线依次点亮](readme/assets/hero.gif)
+[静态头图](readme/assets/hero.svg) · [合成头图](readme/assets/hero.png)
 
-[查看静态头图](readme/assets/hero.svg)
-
-起稿、证据审查和视觉呈现可以分开执行，也可以合并。快速创建只起稿；审查增加实际执行与逐主张核对；优化再增加配图和移动端验收。适合愿意为事实与显示效果增加检查步骤的作者。生图与 GIF 都需要明确同意。
+三条流水线可以分开用。快速创建只起稿；审查对照仓库核对主张；优化把需要保留的图做成静态 SVG。生图和 GIF 都要明确同意后才会做。
 
 ## 先试一次
 
-加载技能后，在一个没有 README 的小项目中发送：
+在还没有 `README.md` 的项目里发送：
 
 ```text
-$readmex 快速写一份中文 README
+/readmex 快速写一份中文 README
 ```
 
-结果写到该项目根目录的 `README.md`。如果项目已有 README，快速创建会转为审查，先交记分卡；单独审查需你同意后才改正文。
+正文写到该项目根目录的 `README.md`。文件已经存在时，快速创建改为审查，先给出记分卡。只有明确要求重写，或走完整流程，才会改已有正文。
 
 | 你想做什么 | 可以这样说 |
-|---|---|
-| 快速起稿 | `$readmex 快速写一份中文 README` |
-| 先看问题 | `$readmex 审查 README，先给记分卡` |
-| 整页美化 | `$readmex 美化 README，整页优化` |
-| 只做素材 | `$readmex 只制作架构图素材` |
-| 完整改写 | `$readmex 完整重写 README，执行全流程` |
+| --- | --- |
+| 快速起稿 | `/readmex 快速写一份中文 README` |
+| 先看问题 | `/readmex 审查 README，先给记分卡` |
+| 整页美化 | `/readmex 美化 README，整页优化` |
+| 只做素材 | `/readmex 只制作架构图素材` |
+| 完整改写 | `/readmex 完整重写 README，执行全流程` |
 
-只说“写个 README”时，会在开头一次问清路线与必要事实。完整流程遇到已有 README，从审查开始；选择完整改写后会直接继续优化。
+> [!NOTE]
+> 只说「写个 README」时，技能会先问要快速简洁的，还是完整清晰并且有配图的。完整流程遇到已有 README 时从审查开始，然后继续优化。
 
 ## 安装
 
-需要支持 Agent Skills 的 AI 工具。获取[本仓库](https://github.com/aibox22/readmeX)后，首次安装到 Codex 时，在仓库根目录运行以下命令，目标技能目录应尚不存在：
+需要能加载 Agent Skills 的工具。技能目录是 `skills/readmex`，安装时整目录复制。Cursor 的用户技能目录是 `~/.cursor/skills`：
 
 ```bash
-mkdir -p "$HOME/.codex/skills"
-cp -R skills/readmex "$HOME/.codex/skills/readmex"
+mkdir -p "$HOME/.cursor/skills"
+cp -R skills/readmex "$HOME/.cursor/skills/readmex"
 ```
 
-复制的是**整个技能目录**，包含管线、脚本、渲染器和数据。已有旧版时完整替换该目录；其他工具可将同一目录放到其技能目录。安装后，在下一轮消息中调用 `$readmex`；若技能列表尚未更新，可以在请求中直接指定 `~/.codex/skills/readmex/SKILL.md`。
+目录已存在时，用新的 `skills/readmex` 整目录替换。其他工具把同一目录放到自己的技能目录。下一轮对话用 `/readmex` 调用。
 
-配套检查使用 **Python 3.9+**，图表渲染使用 **Node.js 18+**，渲染器无需安装 npm 依赖。本次本地验证环境为 Python 3.9.6、Node.js 20.20.2；其他版本尚未实测。写作由 AI 执行，`$readmex` 不是终端命令。
+| 用途 | 要求 |
+| --- | --- |
+| 扫描、机械检查、GIF 脚本 | Python 3（标准库） |
+| 架构图、流程图 | Node.js 18 或更新版本，无需 `npm install` |
+| GIF（可选） | Pillow、ffmpeg，以及 `rsvg-convert` 或 macOS `sips` |
 
-## 三条流水线
+## 完整流程
 
-![readmex 完整流程：创建新稿，核验并改写，再生成视觉素材](readme/assets/workflow.gif)
+<p align="center">
+  <img src="readme/assets/workflow.gif" width="100%" alt="完整流程从创建到审查，再进入优化">
+</p>
 
-[查看静态流程图](readme/assets/workflow.svg)
+[静态流程图](readme/assets/workflow.svg)
 
-- **创建**：通读项目，写清用途、安装与用例。已有 Logo 放入页头；只有必要时才添加一到两张 Mermaid。
-- **审查**：扫描仓库，在干净环境验证安装与首个使用步骤，逐项核对主张，再按读者决策重排正文。
-- **优化**：冻结项目故事与视觉规格，把需要保留的 Mermaid 替换为静态 SVG，补上图下说明并检查手机显示。
+从左到右是合并执行的顺序：创建把 `README.md` 写到目标仓库，审查核对主张，优化把图换成静态 SVG。已有 README 时跳过创建。单独审查要等你同意后才改正文；完整流程写完记分卡后继续。通过条件见 [记分卡](skills/readmex/references/review-scorecard.md)：五项阻断全部通过，八项至少 14/16。机械脚本只报告事实，不打分。
 
-无现成 README 时按创建→审查→优化执行；已有 README 跳过创建。完整流程已授权改写，单独审查仍先诊断、后确认。
+## 请求如何落到仓库
 
-审查包含五项阻断和八项计分：身份、首步、主张、状态、许可证全部通过，且得分至少 **14/16**，再通过冷读者五问，才可声明通过。机械脚本不自动打分，未知事实会降级或删除并记入记分卡。
+<p align="center">
+  <img src="readme/assets/architecture.svg" width="100%" alt="对话进入技能，技能把 README 写进目标仓库">
+</p>
 
-## 机制与输出
-
-![readmex 结构：SKILL 入口选择流水线，流水线按需调用核验与渲染工具](readme/assets/architecture.svg)
-
-`SKILL.md` 负责路由、开场提问和目录约定；`pipelines/` 描述三条任务；`scripts/` 与渲染器提供机械检查和素材生产。它是交给 AI 执行的技能，不是单条命令即可完成写作的 CLI。
+作者在对话里提出请求，`SKILL.md` 选择一条流水线，正文写入目标仓库根目录的 `README.md`。图里的颜色只区分三个部分，正文是仓库里的文件。审查和优化需要时才调用扫描、机械检查和 `render-diagram.mjs`。
 
 ```text
-<target>/
+<目标仓库>/
 ├── README.md          # 最终正文
-├── readme/assets/     # 正文引用的素材，随仓库提交
-└── .readmex/          # 扫描、记分卡、源 JSON 与预览，加入 .gitignore
+├── readme/assets/     # 正文引用的图
+└── .readmex/          # 扫描、记分卡、图的源文件和预览
 ```
 
-默认使用自带浅色背景的 SVG。源码引用核验当前文件与行号；需要固定提交时也可按提交核验。必要信息始终留在 Markdown，图片失效时仍可读。
+技能会在目标仓库的 `.gitignore` 里加入 `.readmex/`（若还没有这一行）。源码引用按当前文件和行号核对，核对失败就不发布那张图。
 
-明确同意后，GIF 仅用于头图和流程图，并保留同名 SVG。依赖为 Pillow、ffmpeg，以及 `rsvg-convert` 或 macOS `sips`；缺依赖时按平台安装，失败则跳过 GIF。生图单独征得同意，合成后的素材发布为 PNG。
+```bash
+python3 skills/readmex/scripts/scan.py <目标仓库> --output <目标仓库>/.readmex/scan.json
+python3 skills/readmex/scripts/readme_factor_audit.py <目标仓库>
+python3 skills/readmex/scripts/readme_view_audit.py <目标仓库>/README.md
+node skills/readmex/bin/render-diagram.mjs <图.json> --repo-root <目标仓库>
+```
+
+`diagram_type` 只能是 `architecture` 或 `workflow`。`--layout-json` 只输出布局，不写图片。
 
 进一步阅读：[技能入口](skills/readmex/SKILL.md) · [审查尺度](skills/readmex/references/review-scorecard.md) · [图表写作与渲染](skills/readmex/references/renderer-authoring.md)。
 
-[MIT 许可证](LICENSE.txt) · [第三方许可通知](skills/readmex/THIRD_PARTY_NOTICES)
+## 状态
+
+本文对应 `skill` 分支。该分支把三条流水线收进现在的技能目录；最近一次整合提交是 2026-11-05 的 `9dfde21`。技能用自然语言选择流水线，没有单独的版本化命令行接口。
+
+## 许可
+
+[MIT 许可证](LICENSE.txt)。第三方材料见 [第三方许可通知](skills/readmex/THIRD_PARTY_NOTICES)：架构与流程渲染器改编自 [Archify](https://github.com/tt-a1i/archify)，快速创建说明改编自 [awesome-copilot](https://github.com/github/awesome-copilot)。
